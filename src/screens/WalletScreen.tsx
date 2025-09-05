@@ -1,26 +1,30 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { colors } from "../theme/colors";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "../navigation/RootNavigator";
 
-type Props = {
-  photoUri: string | null;
-  onLogout: () => void;
-};
+type Props = NativeStackScreenProps<RootStackParamList, "Wallet">;
 
-export default function WalletScreen({ photoUri, onLogout }: Props) {
+export default function WalletScreen({ route, navigation }: Props) {
+  const photoUri = route.params?.photoUri || null;
+  const avatarSource = photoUri
+    ? { uri: photoUri }
+    : require("../../assets/avatar.png");
+
   const [balance, setBalance] = useState<number>(12800500);
-
   const addFunds = () => setBalance((b) => b + 1000000);
   const paySample = () => setBalance((b) => Math.max(0, b - 50000));
+
+  const logout = () => {
+    // sin backend: reseteo navegación al Login
+    navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        {photoUri ? (
-          <Image source={{ uri: photoUri }} style={styles.avatar} />
-        ) : (
-          <View style={[styles.avatar, styles.avatarFallback]} />
-        )}
+        <Image source={avatarSource} style={styles.avatar} />
         <View>
           <Text style={styles.title}>Bienvenido a tu cuenta</Text>
           <Text style={styles.subtitle}> Administrá tus fondos</Text>
@@ -41,7 +45,7 @@ export default function WalletScreen({ photoUri, onLogout }: Props) {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.logout} onPress={onLogout}>
+      <TouchableOpacity style={styles.logout} onPress={logout}>
         <Text style={styles.logoutText}>Cerrar sesión</Text>
       </TouchableOpacity>
 
@@ -66,7 +70,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.primary,
   },
-  avatarFallback: { backgroundColor: colors.surface2 },
   title: { color: colors.text, fontSize: 22, fontWeight: "800" },
   subtitle: { color: colors.textMuted, fontSize: 12 },
   card: {
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     marginBottom: 14,
   },
-  cardLabel: { color: colors.textSecondary, fontSize: 12 },
+  cardLabel: { color: colors.textMuted, fontSize: 12 },
   cardValue: {
     color: colors.text,
     fontSize: 32,

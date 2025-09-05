@@ -40,12 +40,13 @@ export default function CameraModal({
   return (
     <Modal visible={visible} animationType="slide">
       <SafeAreaView style={styles.modalRoot}>
-        <CameraView
-          ref={cameraRef}
-          style={styles.camera}
-          facing={currentFacing}
-          onCameraReady={() => setReady(true)}
-        >
+        <View style={styles.cameraWrapper}>
+          <CameraView
+            ref={cameraRef}
+            style={StyleSheet.absoluteFill}
+            facing={currentFacing}
+            onCameraReady={() => setReady(true)}
+          />
           <View style={styles.overlay}>
             <TouchableOpacity
               style={styles.smallButton}
@@ -69,7 +70,7 @@ export default function CameraModal({
               <Text style={styles.smallButtonText}>✕ Cerrar</Text>
             </TouchableOpacity>
           </View>
-        </CameraView>
+        </View>
       </SafeAreaView>
     </Modal>
   );
@@ -77,7 +78,7 @@ export default function CameraModal({
 
 const styles = StyleSheet.create({
   modalRoot: { flex: 1, backgroundColor: "black" },
-  camera: { flex: 1 },
+  cameraWrapper: { flex: 1, position: "relative" },
   overlay: {
     position: "absolute",
     bottom: 24,
